@@ -1,0 +1,8 @@
+{
+    "excludeFiles": [
+        ".git/**",
+        "node_modules/**",
+        "test/comp1/**"
+    ],
+    "fileExtensions": [".js"]
+}
