@@ -1,10 +1,26 @@
 /**
- * @author: Apurav Chauhan (apurav.chauhan@gmail.com)
+ * @author: Apurav Chauhan
  */
 var path = require('path');
 var fs = require("fs");
 var posthtml = require('posthtml');
-
+var events = ["oncopy", "oncut", "onpaste", "oncompositionend",
+ "oncompositionstart", "oncompositionupdate", "onkeydown", "onkeypress",
+  "onkeyup", "onfocus", "onblur", "onchange", "oninput", "oninvalid",
+   "onsubmit", "onclick", "oncontextmenu", "ondoubleclick", "ondrag", 
+   "ondragend", "ondragenter", "ondragexit", "ondragleave", "ondragover",
+    "ondragstart", "ondrop", "onmousedown", "onmouseenter", "onmouseleave", 
+    "onmousemove", "onmouseout", "onmouseover", "onmouseup", "onpointerdown", 
+    "onpointermove", "onpointerup", "onpointercancel", "ongotpointercapture", 
+    "onlostpointercapture", "onpointerenter", "onpointerleave", "onpointerover",
+     "onpointerout", "onselect", "ontouchcancel", "ontouchend", "ontouchmove", 
+     "ontouchstart", "onscroll", "onwheel", "onabort", "oncanplay",
+      "oncanplaythrough", "ondurationchange", "onemptied", "onencrypted", 
+      "onended", "onerror", "onloadeddata", "onloadedmetadata", "onloadstart", 
+      "onpause", "onplay", "onplaying", "onprogress", "onratechange", "onseeked", 
+      "onseeking", "onstalled", "onsuspend", "ontimeupdate", "onvolumechange", 
+      "onwaiting", "onload", "onerror", "onanimationstart", "onanimationend", 
+      "onanimationiteration", "ontransitionend", "ontoggle"];
 var plugin = function posthtmlCustomElements(options) {
   options = options || {};
   var traverser = function (tree) {
@@ -33,7 +49,7 @@ var plugin = function posthtmlCustomElements(options) {
         }
         for (var atr in attrs) {
           var value = attrs[atr];
-          if (typeof value === 'string') {
+          if (events.indexOf(atr.toLowerCase())===-1 && typeof value === 'string') {
             attrs[atr] = value.replace('{', '${');
           }
         }

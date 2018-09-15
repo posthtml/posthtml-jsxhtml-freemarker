@@ -146,6 +146,12 @@ describe('Normalized JSX HTML to Freemarker transpiler', function () {
      
       test(html, reference, { loc: __dirname }, done);
     });
+    it('loop witth negated conditional and onclick', function (done) {
+      var html = '<PLUGIN-CONDITION data="a==true" type="||"><span onClick={this.clickMe} name={a.test}>loaded</span><PLUGIN-LOOP data="users" type="c">{c}</PLUGIN-LOOP></PLUGIN-CONDITION>';
+      var reference = '<#if !a==true><span onClick="{this.clickMe}" name="${a.test}">loaded</span><#list users as c>${c}</#list></#if>';
+     
+      test(html, reference, { loc: __dirname }, done);
+    });
   });
 });
 
