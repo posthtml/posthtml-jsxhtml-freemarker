@@ -56,19 +56,60 @@ var plugin = function posthtmlCustomElements(options) {
         //fetch the actual HTML template from component's location
         if (attrs && attrs['cust-loc']) {
           var loc = attrs['cust-loc'];
-          var contents = fs.readFileSync(path.join(options.loc, loc, "index.js"), 'utf8');
-          var nestedTree = posthtml([plugin({ loc: path.join(options.loc, loc) })])
-            .process(contents, { sync: true });
-          var newtree = traverser(nestedTree.tree);
-          node = [];
-          newtree.walk(function (n) {
-            node.push(n);
-          });
-        }
+
+
+          /**
+           * check whether path.join(options.loc, loc) exists
+           * if TRUE then process index.js inside it.
+           * else try to get the JS file from the same name.
+           * else skip this step
+           */
+
+          let locPath = path.join(options.loc, loc);
+
+          var nestedTree = {};
+
+          if(options.skipComponents.indexOf(node.tag) === -1) {
+
+            if (fs.existsSync(locPath)) {
+              contents = fs.readFileSync(path.join(options.loc, loc, "index.js"), 'utf8');
+              nestedTree = posthtml([plugin({ loc: path.join(options.loc, loc), skipComponents: options.skipComponents })])
+              .process(contents, { sync: true });
+            } else {
+              contents = fs.readFileSync(locPath + '.js', 'utf8');
+              nestedTree = posthtml([plugin({ loc: options.loc, skipComponents: options.skipComponents })])
+              .process(contents, { sync: true });
+            }
+
+            var newtree = traverser(nestedTree.tree);
+            node = [];
+            newtree.walk(function (n) {
+                if(typeof n !== 'string')
+                  node.push(n);
+              });
+            } else {
+              if(node.attrs.code) {
+                node.content = ['{' + node.tag + '.' + node.attrs.code + '}'];
+              }
+              // else {
+              //   node.content = ['Component Replaced: ' + node.tag];
+              // }
+              node.attrs = {};
+              // eat the component which cannot be parsed for now.
+              node.tag = 'div';
+            }
+
+          }  
+            
         return node;
       }
       //text node
-      return node.replace('{', '${');
+      if(node && node.replace) {
+        return node.replace('{', '${');
+      } else {
+        return node;
+      }
+      
     });
     return tree;
   };
