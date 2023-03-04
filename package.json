@@ -45,7 +45,7 @@
     "istanbul": "^0.4.2",
     "jscs": "^3.0.7",
     "jshint": "^2.8.0",
-    "mocha": "^5.2.0"
+    "mocha": "^10.2.0"
   },
   "dependencies": {
     "posthtml": "^0.9.2"
